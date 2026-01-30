@@ -1,18 +1,40 @@
 
-import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { StyleSheet, ViewStyle, TextStyle, useColorScheme } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
+// Hook to get theme-aware colors
+export const useThemeColors = () => {
+  const theme = useTheme();
+  const colorScheme = useColorScheme();
+  
+  return {
+    primary: '#8B4513',      // Dark brown/burgundy for buttons
+    secondary: '#A0522D',    // Sienna brown
+    accent: '#CD853F',       // Peru/tan accent
+    background: theme.colors.background,
+    backgroundAlt: colorScheme === 'dark' ? '#1A1A1A' : '#F5F5F5',
+    text: theme.colors.text,
+    textSecondary: colorScheme === 'dark' ? '#999999' : '#666666',
+    card: theme.colors.card,
+    cardLight: colorScheme === 'dark' ? '#1A1A1A' : '#E8E8E8',
+    border: colorScheme === 'dark' ? '#333333' : '#E0E0E0',
+    danger: colorScheme === 'dark' ? '#8B3A3A' : '#DC2626',
+  };
+};
+
+// Legacy static colors for backwards compatibility (will use dark theme colors)
 export const colors = {
-  primary: '#8B4513',      // Dark brown/burgundy for buttons
-  secondary: '#A0522D',    // Sienna brown
-  accent: '#CD853F',       // Peru/tan accent
-  background: '#000000',   // Pure black background
-  backgroundAlt: '#1A1A1A', // Dark gray for cards
-  text: '#FFFFFF',         // White text
-  textSecondary: '#999999', // Gray text
-  card: '#1A1A1A',         // Dark card background
-  cardLight: '#E8E8E8',    // Light gray for stat cards
-  border: '#333333',       // Dark border
-  danger: '#8B3A3A',       // Dark red for delete
+  primary: '#8B4513',
+  secondary: '#A0522D',
+  accent: '#CD853F',
+  background: '#000000',
+  backgroundAlt: '#1A1A1A',
+  text: '#FFFFFF',
+  textSecondary: '#999999',
+  card: '#1A1A1A',
+  cardLight: '#E8E8E8',
+  border: '#333333',
+  danger: '#8B3A3A',
 };
 
 export const buttonStyles = StyleSheet.create({

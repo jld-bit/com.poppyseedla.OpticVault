@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '@/styles/commonStyles';
+import { useThemeColors } from '@/styles/commonStyles';
 import * as ImagePicker from 'expo-image-picker';
 import { IconSymbol } from '@/components/IconSymbol';
 
@@ -21,6 +21,7 @@ type Condition = 'New' | 'Used' | 'Vintage';
 
 export default function AddItemScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
   const [brand, setBrand] = useState('');
   const [model, setModel] = useState('');
   const [condition, setCondition] = useState<Condition>('New');
@@ -93,6 +94,183 @@ export default function AddItemScreen() {
   };
 
   const paddingTopValue = Platform.OS === 'android' ? 48 : 0;
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      padding: 20,
+    },
+    headerButton: {
+      fontSize: 16,
+      color: colors.text,
+      paddingHorizontal: 16,
+    },
+    photoSection: {
+      alignItems: 'center',
+      marginBottom: 24,
+    },
+    photoContainer: {
+      width: '100%',
+      height: 200,
+      borderRadius: 12,
+      overflow: 'hidden',
+      backgroundColor: colors.card,
+    },
+    photo: {
+      width: '100%',
+      height: '100%',
+    },
+    addPhotoButton: {
+      width: '100%',
+      height: 200,
+      borderRadius: 12,
+      backgroundColor: colors.card,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 2,
+      borderColor: colors.border,
+      borderStyle: 'dashed',
+    },
+    addPhotoText: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      marginTop: 8,
+    },
+    formSection: {
+      marginBottom: 20,
+    },
+    label: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 8,
+    },
+    input: {
+      backgroundColor: colors.card,
+      borderRadius: 8,
+      padding: 12,
+      fontSize: 16,
+      color: colors.text,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    notesInput: {
+      height: 100,
+      textAlignVertical: 'top',
+    },
+    conditionButtons: {
+      flexDirection: 'row',
+      gap: 8,
+    },
+    conditionButton: {
+      flex: 1,
+      paddingVertical: 12,
+      borderRadius: 8,
+      backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.border,
+      alignItems: 'center',
+    },
+    conditionButtonActive: {
+      backgroundColor: colors.primary,
+      borderColor: colors.primary,
+    },
+    conditionButtonText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.textSecondary,
+    },
+    conditionButtonTextActive: {
+      color: '#FFFFFF',
+    },
+    priceInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.card,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: colors.border,
+      paddingLeft: 12,
+    },
+    currencySymbol: {
+      fontSize: 16,
+      color: colors.text,
+      marginRight: 4,
+    },
+    priceInput: {
+      flex: 1,
+      padding: 12,
+      fontSize: 16,
+      color: colors.text,
+    },
+    removePhotoButton: {
+      backgroundColor: colors.danger,
+      borderRadius: 8,
+      padding: 16,
+      alignItems: 'center',
+      marginTop: 12,
+    },
+    removePhotoText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#FFFFFF',
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+    },
+    modalContent: {
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      padding: 24,
+      width: '100%',
+      maxWidth: 400,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: colors.text,
+      marginBottom: 8,
+    },
+    modalSubtitle: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      marginBottom: 20,
+    },
+    modalOption: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 16,
+      backgroundColor: colors.backgroundAlt,
+      borderRadius: 8,
+      marginBottom: 12,
+    },
+    modalOptionText: {
+      fontSize: 16,
+      color: colors.text,
+      marginLeft: 16,
+      fontWeight: '500',
+    },
+    modalCancelButton: {
+      padding: 16,
+      alignItems: 'center',
+      marginTop: 8,
+    },
+    modalCancelText: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      fontWeight: '500',
+    },
+  });
 
   return (
     <React.Fragment>
@@ -303,180 +481,3 @@ export default function AddItemScreen() {
     </React.Fragment>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 20,
-  },
-  headerButton: {
-    fontSize: 16,
-    color: colors.text,
-    paddingHorizontal: 16,
-  },
-  photoSection: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  photoContainer: {
-    width: '100%',
-    height: 200,
-    borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: colors.card,
-  },
-  photo: {
-    width: '100%',
-    height: '100%',
-  },
-  addPhotoButton: {
-    width: '100%',
-    height: 200,
-    borderRadius: 12,
-    backgroundColor: colors.card,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderStyle: 'dashed',
-  },
-  addPhotoText: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    marginTop: 8,
-  },
-  formSection: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 8,
-  },
-  input: {
-    backgroundColor: colors.card,
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    color: colors.text,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  notesInput: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  conditionButtons: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  conditionButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-    alignItems: 'center',
-  },
-  conditionButtonActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  conditionButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textSecondary,
-  },
-  conditionButtonTextActive: {
-    color: colors.text,
-  },
-  priceInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.card,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.border,
-    paddingLeft: 12,
-  },
-  currencySymbol: {
-    fontSize: 16,
-    color: colors.text,
-    marginRight: 4,
-  },
-  priceInput: {
-    flex: 1,
-    padding: 12,
-    fontSize: 16,
-    color: colors.text,
-  },
-  removePhotoButton: {
-    backgroundColor: colors.danger,
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 12,
-  },
-  removePhotoText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 24,
-    width: '100%',
-    maxWidth: 400,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 8,
-  },
-  modalSubtitle: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 20,
-  },
-  modalOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: colors.backgroundAlt,
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  modalOptionText: {
-    fontSize: 16,
-    color: colors.text,
-    marginLeft: 16,
-    fontWeight: '500',
-  },
-  modalCancelButton: {
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  modalCancelText: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    fontWeight: '500',
-  },
-});

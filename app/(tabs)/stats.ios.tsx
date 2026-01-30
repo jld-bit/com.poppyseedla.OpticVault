@@ -9,9 +9,10 @@ import {
   Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '@/styles/commonStyles';
+import { useThemeColors } from '@/styles/commonStyles';
 
 export default function StatsScreen() {
+  const colors = useThemeColors();
   const [totalItems] = useState(0);
   const [totalSpend] = useState(0.00);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -35,6 +36,161 @@ export default function StatsScreen() {
 
   const totalItemsDisplay = totalItems.toString();
   const totalSpendDisplay = `$${totalSpend.toFixed(2)}`;
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      paddingHorizontal: 20,
+      paddingBottom: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    headerTitle: {
+      fontSize: 32,
+      fontWeight: 'bold',
+      color: colors.text,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      padding: 20,
+      paddingBottom: 100,
+    },
+    statCard: {
+      backgroundColor: colors.cardLight,
+      borderRadius: 12,
+      padding: 20,
+      marginBottom: 12,
+    },
+    statLabel: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      marginBottom: 8,
+    },
+    statValue: {
+      fontSize: 32,
+      fontWeight: 'bold',
+      color: colors.text,
+    },
+    deleteButton: {
+      backgroundColor: colors.danger,
+      borderRadius: 12,
+      padding: 16,
+      alignItems: 'center',
+      marginTop: 12,
+      marginBottom: 24,
+    },
+    deleteButtonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#FFFFFF',
+    },
+    appearanceSection: {
+      marginTop: 12,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 8,
+    },
+    sectionSubtitle: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      marginBottom: 16,
+    },
+    appearanceOptions: {
+      gap: 12,
+    },
+    appearanceOption: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 12,
+    },
+    appearanceLabel: {
+      fontSize: 16,
+      color: colors.text,
+    },
+    radioUnchecked: {
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: colors.textSecondary,
+    },
+    radioChecked: {
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: '#2196F3',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    radioInner: {
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      backgroundColor: '#2196F3',
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+    },
+    modalContent: {
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      padding: 24,
+      width: '100%',
+      maxWidth: 400,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: colors.text,
+      marginBottom: 12,
+    },
+    modalMessage: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      marginBottom: 24,
+      lineHeight: 22,
+    },
+    modalButtons: {
+      flexDirection: 'row',
+      gap: 12,
+    },
+    modalButton: {
+      flex: 1,
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    modalButtonCancel: {
+      backgroundColor: colors.backgroundAlt,
+    },
+    modalButtonDelete: {
+      backgroundColor: colors.danger,
+    },
+    modalButtonTextCancel: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    modalButtonTextDelete: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#FFFFFF',
+    },
+  });
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -115,158 +271,3 @@ export default function StatsScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: colors.text,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 100,
-  },
-  statCard: {
-    backgroundColor: colors.cardLight,
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 12,
-  },
-  statLabel: {
-    fontSize: 16,
-    color: '#666666',
-    marginBottom: 8,
-  },
-  statValue: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#000000',
-  },
-  deleteButton: {
-    backgroundColor: colors.danger,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 12,
-    marginBottom: 24,
-  },
-  deleteButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  appearanceSection: {
-    marginTop: 12,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 8,
-  },
-  sectionSubtitle: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 16,
-  },
-  appearanceOptions: {
-    gap: 12,
-  },
-  appearanceOption: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  appearanceLabel: {
-    fontSize: 16,
-    color: colors.text,
-  },
-  radioUnchecked: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: colors.textSecondary,
-  },
-  radioChecked: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#2196F3',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  radioInner: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#2196F3',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 24,
-    width: '100%',
-    maxWidth: 400,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 12,
-  },
-  modalMessage: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    marginBottom: 24,
-    lineHeight: 22,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  modalButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  modalButtonCancel: {
-    backgroundColor: colors.backgroundAlt,
-  },
-  modalButtonDelete: {
-    backgroundColor: colors.danger,
-  },
-  modalButtonTextCancel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  modalButtonTextDelete: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-});
