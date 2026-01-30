@@ -8,7 +8,7 @@ export default function TabLayout() {
     {
       name: '(home)',
       route: '/(tabs)/(home)/',
-      icon: 'grid-view',
+      icon: 'apps',
       label: 'Items',
     },
     {

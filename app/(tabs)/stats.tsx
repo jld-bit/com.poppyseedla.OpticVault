@@ -8,15 +8,19 @@ import {
   TouchableOpacity,
   Platform,
   Modal,
+  Appearance,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/styles/commonStyles';
+
+type AppearanceMode = 'light' | 'dark' | 'automatic';
 
 export default function StatsScreen() {
   const colors = useThemeColors();
   const [totalItems] = useState(0);
   const [totalSpend] = useState(0.00);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [appearanceMode, setAppearanceMode] = useState<AppearanceMode>('automatic');
 
   console.log('StatsScreen rendered');
 
@@ -33,6 +37,17 @@ export default function StatsScreen() {
   const cancelDelete = () => {
     console.log('Delete cancelled');
     setShowDeleteModal(false);
+  };
+
+  const handleAppearanceChange = (mode: AppearanceMode) => {
+    console.log('User changed appearance mode to:', mode);
+    setAppearanceMode(mode);
+    
+    if (mode === 'automatic') {
+      Appearance.setColorScheme(null);
+    } else {
+      Appearance.setColorScheme(mode);
+    }
   };
 
   const totalItemsDisplay = totalItems.toString();
@@ -221,20 +236,53 @@ export default function StatsScreen() {
 
         <View style={styles.appearanceSection}>
           <Text style={styles.sectionTitle}>Appearance</Text>
-          <Text style={styles.sectionSubtitle}>Choose the default appearance.</Text>
+          <Text style={styles.sectionSubtitle}>Choose how the app looks.</Text>
           
           <View style={styles.appearanceOptions}>
-            <View style={styles.appearanceOption}>
+            <TouchableOpacity
+              style={styles.appearanceOption}
+              onPress={() => handleAppearanceChange('light')}
+              activeOpacity={0.7}
+            >
               <Text style={styles.appearanceLabel}>Light</Text>
-              <View style={styles.radioUnchecked} />
-            </View>
+              {appearanceMode === 'light' ? (
+                <View style={styles.radioChecked}>
+                  <View style={styles.radioInner} />
+                </View>
+              ) : (
+                <View style={styles.radioUnchecked} />
+              )}
+            </TouchableOpacity>
             
-            <View style={styles.appearanceOption}>
+            <TouchableOpacity
+              style={styles.appearanceOption}
+              onPress={() => handleAppearanceChange('dark')}
+              activeOpacity={0.7}
+            >
               <Text style={styles.appearanceLabel}>Dark</Text>
-              <View style={styles.radioChecked}>
-                <View style={styles.radioInner} />
-              </View>
-            </View>
+              {appearanceMode === 'dark' ? (
+                <View style={styles.radioChecked}>
+                  <View style={styles.radioInner} />
+                </View>
+              ) : (
+                <View style={styles.radioUnchecked} />
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.appearanceOption}
+              onPress={() => handleAppearanceChange('automatic')}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.appearanceLabel}>Automatic</Text>
+              {appearanceMode === 'automatic' ? (
+                <View style={styles.radioChecked}>
+                  <View style={styles.radioInner} />
+                </View>
+              ) : (
+                <View style={styles.radioUnchecked} />
+              )}
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

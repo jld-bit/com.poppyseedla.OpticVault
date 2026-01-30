@@ -7,7 +7,7 @@ export default function TabLayout() {
     <NativeTabs>
       <NativeTabs.Trigger name="(home)">
         <Label>Items</Label>
-        <Icon sf={{ default: 'square.grid.2x2', selected: 'square.grid.2x2.fill' }} drawable="grid-view" />
+        <Icon sf={{ default: 'square.grid.2x2', selected: 'square.grid.2x2.fill' }} drawable="apps" />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="stats">
         <Label>Stats</Label>
