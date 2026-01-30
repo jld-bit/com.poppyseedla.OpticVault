@@ -12,14 +12,14 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/styles/commonStyles';
 
-type AppearanceMode = 'light' | 'dark' | 'automatic';
+type AppearanceMode = 'light' | 'dark';
 
 export default function StatsScreen() {
   const colors = useThemeColors();
   const [totalItems] = useState(0);
   const [totalSpend] = useState(0.00);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [appearanceMode, setAppearanceMode] = useState<AppearanceMode>('automatic');
+  const [appearanceMode, setAppearanceMode] = useState<AppearanceMode>('light');
 
   console.log('StatsScreen rendered');
 
@@ -41,12 +41,7 @@ export default function StatsScreen() {
   const handleAppearanceChange = (mode: AppearanceMode) => {
     console.log('User changed appearance mode to:', mode);
     setAppearanceMode(mode);
-    
-    if (mode === 'automatic') {
-      Appearance.setColorScheme(null);
-    } else {
-      Appearance.setColorScheme(mode);
-    }
+    Appearance.setColorScheme(mode);
   };
 
   const totalItemsDisplay = totalItems.toString();
@@ -259,21 +254,6 @@ export default function StatsScreen() {
             >
               <Text style={styles.appearanceLabel}>Dark</Text>
               {appearanceMode === 'dark' ? (
-                <View style={styles.radioChecked}>
-                  <View style={styles.radioInner} />
-                </View>
-              ) : (
-                <View style={styles.radioUnchecked} />
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.appearanceOption}
-              onPress={() => handleAppearanceChange('automatic')}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.appearanceLabel}>Automatic</Text>
-              {appearanceMode === 'automatic' ? (
                 <View style={styles.radioChecked}>
                   <View style={styles.radioInner} />
                 </View>
