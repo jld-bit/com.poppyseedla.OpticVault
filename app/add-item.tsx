@@ -16,8 +16,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/styles/commonStyles';
 import * as ImagePicker from 'expo-image-picker';
 import { IconSymbol } from '@/components/IconSymbol';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Condition = 'New' | 'Used' | 'Vintage';
+
+interface Item {
+  id: string;
+  brand: string;
+  model: string;
+  condition: Condition;
+  price: number;
+  notes: string;
+  photoUri?: string;
+}
 
 export default function AddItemScreen() {
   const router = useRouter();
@@ -32,9 +43,43 @@ export default function AddItemScreen() {
 
   console.log('AddItemScreen rendered');
 
-  const handleSave = () => {
+  const handleSave = async () => {
     console.log('User tapped Save button', { brand, model, condition, price, notes });
-    router.back();
+    
+    // Validate required fields
+    if (!brand.trim() || !model.trim()) {
+      console.log('Validation failed: brand and model are required');
+      return;
+    }
+
+    try {
+      // Load existing items
+      const existingItemsJson = await AsyncStorage.getItem('vaultItems');
+      const existingItems: Item[] = existingItemsJson ? JSON.parse(existingItemsJson) : [];
+      
+      // Create new item
+      const newItem: Item = {
+        id: Date.now().toString(),
+        brand: brand.trim(),
+        model: model.trim(),
+        condition,
+        price: price ? parseFloat(price) : 0,
+        notes: notes.trim(),
+        photoUri: photoUri || undefined,
+      };
+
+      // Add to items array
+      const updatedItems = [...existingItems, newItem];
+      
+      // Save to AsyncStorage
+      await AsyncStorage.setItem('vaultItems', JSON.stringify(updatedItems));
+      console.log('Item saved successfully:', newItem);
+      
+      // Navigate back
+      router.back();
+    } catch (error) {
+      console.error('Error saving item:', error);
+    }
   };
 
   const handleCancel = () => {

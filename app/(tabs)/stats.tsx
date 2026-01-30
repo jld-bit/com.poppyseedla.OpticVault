@@ -12,17 +12,54 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/styles/commonStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 type AppearanceMode = 'light' | 'dark';
 
+interface Item {
+  id: string;
+  brand: string;
+  model: string;
+  condition: 'New' | 'Used' | 'Vintage';
+  price: number;
+  notes: string;
+  photoUri?: string;
+}
+
 export default function StatsScreen() {
   const colors = useThemeColors();
-  const [totalItems] = useState(0);
-  const [totalSpend] = useState(0.00);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalSpend, setTotalSpend] = useState(0.00);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [appearanceMode, setAppearanceMode] = useState<AppearanceMode>('light');
 
   console.log('StatsScreen rendered');
+
+  // Load stats from AsyncStorage
+  const loadStats = async () => {
+    try {
+      const itemsJson = await AsyncStorage.getItem('vaultItems');
+      if (itemsJson) {
+        const items: Item[] = JSON.parse(itemsJson);
+        setTotalItems(items.length);
+        const total = items.reduce((sum, item) => sum + item.price, 0);
+        setTotalSpend(total);
+        console.log('Loaded stats - Items:', items.length, 'Total spend:', total);
+      } else {
+        setTotalItems(0);
+        setTotalSpend(0);
+      }
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
+
+  // Load stats when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      loadStats();
+    }, [])
+  );
 
   useEffect(() => {
     const loadAppearance = async () => {
@@ -43,8 +80,16 @@ export default function StatsScreen() {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    console.log('All data deleted');
+  const confirmDelete = async () => {
+    console.log('User confirmed delete all data');
+    try {
+      await AsyncStorage.removeItem('vaultItems');
+      setTotalItems(0);
+      setTotalSpend(0);
+      console.log('All data deleted successfully');
+    } catch (error) {
+      console.error('Error deleting data:', error);
+    }
     setShowDeleteModal(false);
   };
 

@@ -1,5 +1,6 @@
+
 import "react-native-reanimated";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -15,6 +16,7 @@ import {
 } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { WidgetProvider } from "@/contexts/WidgetContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // Note: Error logging is auto-initialized via index.ts import
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -25,17 +27,54 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const systemColorScheme = useColorScheme();
   const networkState = useNetworkState();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+  const [userTheme, setUserTheme] = useState<'light' | 'dark' | null>(null);
+  const [themeLoaded, setThemeLoaded] = useState(false);
+
+  // Load user's theme preference from AsyncStorage
+  useEffect(() => {
+    const loadThemePreference = async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem('appAppearanceMode');
+        console.log('Loaded theme preference from storage:', storedTheme);
+        if (storedTheme === 'light' || storedTheme === 'dark') {
+          setUserTheme(storedTheme);
+        }
+      } catch (error) {
+        console.log('Error loading theme preference:', error);
+      } finally {
+        setThemeLoaded(true);
+      }
+    };
+    loadThemePreference();
+  }, []);
+
+  // Listen for theme changes in AsyncStorage
+  useEffect(() => {
+    const checkThemeChanges = setInterval(async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem('appAppearanceMode');
+        if (storedTheme !== userTheme && (storedTheme === 'light' || storedTheme === 'dark')) {
+          console.log('Theme changed in storage, updating to:', storedTheme);
+          setUserTheme(storedTheme);
+        }
+      } catch (error) {
+        console.log('Error checking theme changes:', error);
+      }
+    }, 500);
+
+    return () => clearInterval(checkThemeChanges);
+  }, [userTheme]);
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded && themeLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, themeLoaded]);
 
   React.useEffect(() => {
     if (
@@ -49,7 +88,7 @@ export default function RootLayout() {
     }
   }, [networkState.isConnected, networkState.isInternetReachable]);
 
-  if (!loaded) {
+  if (!loaded || !themeLoaded) {
     return null;
   }
 
@@ -77,11 +116,18 @@ export default function RootLayout() {
       notification: "rgb(255, 69, 58)", // System Red (Dark Mode)
     },
   };
+
+  // Use user's preference if set, otherwise fall back to system theme
+  const activeColorScheme = userTheme || systemColorScheme || 'light';
+  const isDark = activeColorScheme === 'dark';
+
+  console.log('Active theme:', activeColorScheme, '(user:', userTheme, ', system:', systemColorScheme, ')');
+
   return (
     <>
-      <StatusBar style="auto" animated />
+      <StatusBar style={isDark ? "light" : "dark"} animated />
         <ThemeProvider
-          value={colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme}
+          value={isDark ? CustomDarkTheme : CustomDefaultTheme}
         >
           <WidgetProvider>
             <GestureHandlerRootView>
@@ -89,7 +135,7 @@ export default function RootLayout() {
               {/* Main app with tabs */}
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             </Stack>
-            <SystemBars style={"auto"} />
+            <SystemBars style={isDark ? "light" : "dark"} />
             </GestureHandlerRootView>
           </WidgetProvider>
         </ThemeProvider>

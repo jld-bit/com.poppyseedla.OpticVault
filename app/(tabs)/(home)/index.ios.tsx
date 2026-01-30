@@ -12,6 +12,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Item {
   id: string;
@@ -29,6 +31,30 @@ export default function ItemsScreen() {
   const [items, setItems] = useState<Item[]>([]);
 
   console.log('ItemsScreen rendered with items:', items.length);
+
+  // Load items from AsyncStorage
+  const loadItems = async () => {
+    try {
+      const itemsJson = await AsyncStorage.getItem('vaultItems');
+      if (itemsJson) {
+        const loadedItems: Item[] = JSON.parse(itemsJson);
+        setItems(loadedItems);
+        console.log('Loaded items from storage:', loadedItems.length);
+      } else {
+        setItems([]);
+        console.log('No items in storage');
+      }
+    } catch (error) {
+      console.error('Error loading items:', error);
+    }
+  };
+
+  // Load items when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      loadItems();
+    }, [])
+  );
 
   const handleAddItem = () => {
     console.log('User tapped Add Item button');
