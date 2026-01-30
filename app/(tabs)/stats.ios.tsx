@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,10 +7,10 @@ import {
   ScrollView,
   TouchableOpacity,
   Modal,
-  Appearance,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/styles/commonStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type AppearanceMode = 'light' | 'dark';
 
@@ -22,6 +22,20 @@ export default function StatsScreen() {
   const [appearanceMode, setAppearanceMode] = useState<AppearanceMode>('light');
 
   console.log('StatsScreen rendered');
+
+  useEffect(() => {
+    const loadAppearance = async () => {
+      try {
+        const storedMode = await AsyncStorage.getItem('appAppearanceMode');
+        if (storedMode === 'light' || storedMode === 'dark') {
+          setAppearanceMode(storedMode);
+        }
+      } catch (error) {
+        console.log('Error loading appearance mode:', error);
+      }
+    };
+    loadAppearance();
+  }, []);
 
   const handleDeleteAllData = () => {
     console.log('User tapped Delete All Data button');
@@ -38,10 +52,15 @@ export default function StatsScreen() {
     setShowDeleteModal(false);
   };
 
-  const handleAppearanceChange = (mode: AppearanceMode) => {
+  const handleAppearanceChange = async (mode: AppearanceMode) => {
     console.log('User changed appearance mode to:', mode);
     setAppearanceMode(mode);
-    Appearance.setColorScheme(mode);
+    try {
+      await AsyncStorage.setItem('appAppearanceMode', mode);
+      console.log('Appearance mode saved:', mode);
+    } catch (error) {
+      console.log('Error saving appearance mode:', error);
+    }
   };
 
   const totalItemsDisplay = totalItems.toString();
