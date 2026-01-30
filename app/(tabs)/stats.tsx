@@ -13,8 +13,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/styles/commonStyles';
 
 export default function StatsScreen() {
-  const [totalItems] = useState(3);
-  const [totalSpend] = useState(350.00);
+  const [totalItems] = useState(0);
+  const [totalSpend] = useState(0.00);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   console.log('StatsScreen rendered');

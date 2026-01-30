@@ -25,32 +25,7 @@ interface Item {
 
 export default function ItemsScreen() {
   const router = useRouter();
-  const [items, setItems] = useState<Item[]>([
-    {
-      id: '1',
-      brand: 'Oakley',
-      model: 'Holbrook',
-      condition: 'New',
-      price: 150.00,
-      notes: 'Polarized lenses',
-    },
-    {
-      id: '2',
-      brand: 'Ray-Ban',
-      model: 'Wayfarer',
-      condition: 'Used',
-      price: 100.00,
-      notes: 'Classic style',
-    },
-    {
-      id: '3',
-      brand: 'Persol',
-      model: 'PO3019S',
-      condition: 'Vintage',
-      price: 100.00,
-      notes: 'Limited edition',
-    },
-  ]);
+  const [items, setItems] = useState<Item[]>([]);
 
   console.log('ItemsScreen rendered with items:', items.length);
 
@@ -77,36 +52,47 @@ export default function ItemsScreen() {
       </View>
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        {items.map((item, index) => {
-          const priceDisplay = `$${item.price.toFixed(2)}`;
-          const conditionColorValue = conditionColor(item.condition);
-          
-          return (
-            <TouchableOpacity
-              key={index}
-              style={styles.itemCard}
-              onPress={() => handleEditItem(item.id)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.itemHeader}>
-                <View style={styles.itemInfo}>
-                  <Text style={styles.itemBrand}>{item.brand}</Text>
-                  <Text style={styles.itemModel}>{item.model}</Text>
-                </View>
-                <View style={[styles.conditionBadge, { backgroundColor: conditionColorValue }]}>
-                  <Text style={styles.conditionText}>{item.condition}</Text>
-                </View>
-              </View>
+        {items.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateTitle}>Your vault is empty</Text>
+            <Text style={styles.emptyStateText}>
+              Tap the + button below to add your first item
+            </Text>
+          </View>
+        ) : (
+          <React.Fragment>
+            {items.map((item, index) => {
+              const priceDisplay = `$${item.price.toFixed(2)}`;
+              const conditionColorValue = conditionColor(item.condition);
               
-              <View style={styles.itemFooter}>
-                <Text style={styles.itemPrice}>{priceDisplay}</Text>
-                {item.notes ? (
-                  <Text style={styles.itemNotes} numberOfLines={1}>{item.notes}</Text>
-                ) : null}
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.itemCard}
+                  onPress={() => handleEditItem(item.id)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.itemHeader}>
+                    <View style={styles.itemInfo}>
+                      <Text style={styles.itemBrand}>{item.brand}</Text>
+                      <Text style={styles.itemModel}>{item.model}</Text>
+                    </View>
+                    <View style={[styles.conditionBadge, { backgroundColor: conditionColorValue }]}>
+                      <Text style={styles.conditionText}>{item.condition}</Text>
+                    </View>
+                  </View>
+                  
+                  <View style={styles.itemFooter}>
+                    <Text style={styles.itemPrice}>{priceDisplay}</Text>
+                    {item.notes ? (
+                      <Text style={styles.itemNotes} numberOfLines={1}>{item.notes}</Text>
+                    ) : null}
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </React.Fragment>
+        )}
       </ScrollView>
 
       <TouchableOpacity style={styles.addButton} onPress={handleAddItem} activeOpacity={0.8}>
@@ -143,6 +129,24 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 20,
     paddingBottom: 100,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  emptyStateTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 12,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    paddingHorizontal: 40,
   },
   itemCard: {
     backgroundColor: colors.card,

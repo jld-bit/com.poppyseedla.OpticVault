@@ -9,11 +9,13 @@ import {
   TouchableOpacity,
   Platform,
   Image,
+  Modal,
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '@/styles/commonStyles';
 import * as ImagePicker from 'expo-image-picker';
+import { IconSymbol } from '@/components/IconSymbol';
 
 type Condition = 'New' | 'Used' | 'Vintage';
 
@@ -25,6 +27,7 @@ export default function AddItemScreen() {
   const [price, setPrice] = useState('');
   const [notes, setNotes] = useState('');
   const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [showImageSourceModal, setShowImageSourceModal] = useState(false);
 
   console.log('AddItemScreen rendered');
 
@@ -38,8 +41,39 @@ export default function AddItemScreen() {
     router.back();
   };
 
-  const handleAddPhoto = async () => {
+  const handleAddPhoto = () => {
     console.log('User tapped Add Photo button');
+    setShowImageSourceModal(true);
+  };
+
+  const handleCameraCapture = async () => {
+    console.log('User selected Camera option');
+    setShowImageSourceModal(false);
+
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    
+    if (!permissionResult.granted) {
+      console.log('Camera permission denied');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setPhotoUri(result.assets[0].uri);
+      console.log('Photo captured:', result.assets[0].uri);
+    }
+  };
+
+  const handleGalleryPick = async () => {
+    console.log('User selected Gallery option');
+    setShowImageSourceModal(false);
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
@@ -49,7 +83,7 @@ export default function AddItemScreen() {
 
     if (!result.canceled) {
       setPhotoUri(result.assets[0].uri);
-      console.log('Photo selected:', result.assets[0].uri);
+      console.log('Photo selected from gallery:', result.assets[0].uri);
     }
   };
 
@@ -92,6 +126,12 @@ export default function AddItemScreen() {
               </View>
             ) : (
               <TouchableOpacity style={styles.addPhotoButton} onPress={handleAddPhoto}>
+                <IconSymbol
+                  ios_icon_name="camera"
+                  android_material_icon_name="camera"
+                  size={32}
+                  color={colors.textSecondary}
+                />
                 <Text style={styles.addPhotoText}>Add Photo</Text>
               </TouchableOpacity>
             )}
@@ -210,6 +250,56 @@ export default function AddItemScreen() {
           ) : null}
         </ScrollView>
       </SafeAreaView>
+
+      <Modal
+        visible={showImageSourceModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowImageSourceModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add Photo</Text>
+            <Text style={styles.modalSubtitle}>Choose a photo source</Text>
+            
+            <TouchableOpacity
+              style={styles.modalOption}
+              onPress={handleCameraCapture}
+              activeOpacity={0.7}
+            >
+              <IconSymbol
+                ios_icon_name="camera"
+                android_material_icon_name="camera"
+                size={24}
+                color={colors.text}
+              />
+              <Text style={styles.modalOptionText}>Take Photo</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.modalOption}
+              onPress={handleGalleryPick}
+              activeOpacity={0.7}
+            >
+              <IconSymbol
+                ios_icon_name="photo"
+                android_material_icon_name="photo"
+                size={24}
+                color={colors.text}
+              />
+              <Text style={styles.modalOptionText}>Choose from Gallery</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.modalCancelButton}
+              onPress={() => setShowImageSourceModal(false)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.modalCancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </React.Fragment>
   );
 }
@@ -259,6 +349,7 @@ const styles = StyleSheet.create({
   addPhotoText: {
     fontSize: 16,
     color: colors.textSecondary,
+    marginTop: 8,
   },
   formSection: {
     marginBottom: 20,
@@ -338,5 +429,54 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: colors.text,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    padding: 24,
+    width: '100%',
+    maxWidth: 400,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 8,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: 20,
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: colors.backgroundAlt,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  modalOptionText: {
+    fontSize: 16,
+    color: colors.text,
+    marginLeft: 16,
+    fontWeight: '500',
+  },
+  modalCancelButton: {
+    padding: 16,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  modalCancelText: {
+    fontSize: 16,
+    color: colors.textSecondary,
+    fontWeight: '500',
   },
 });
