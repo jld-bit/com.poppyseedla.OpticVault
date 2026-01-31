@@ -338,7 +338,7 @@ export default function AddItemScreen() {
       flexDirection: 'row',
       alignItems: 'center',
       padding: 16,
-      backgroundColor: colors.backgroundAlt,
+      backgroundColor: colors.modalOptionBackground,
       borderRadius: 8,
       marginBottom: 12,
     },

@@ -19,6 +19,7 @@ export const useThemeColors = () => {
     cardLight: colorScheme === 'dark' ? '#1A1A1A' : '#E8E8E8',
     border: colorScheme === 'dark' ? '#333333' : '#E0E0E0',
     danger: colorScheme === 'dark' ? '#8B3A3A' : '#DC2626',
+    modalOptionBackground: colorScheme === 'dark' ? '#2A2A2A' : '#F0F0F0',
   };
 };
 
