@@ -16,10 +16,12 @@ export const useThemeColors = () => {
     text: theme.colors.text,
     textSecondary: colorScheme === 'dark' ? '#999999' : '#666666',
     card: theme.colors.card,
-    cardLight: colorScheme === 'dark' ? '#1A1A1A' : '#E8E8E8',
-    border: colorScheme === 'dark' ? '#333333' : '#E0E0E0',
+    cardLight: colorScheme === 'dark' ? '#2A2A2A' : '#E8E8E8',
+    border: colorScheme === 'dark' ? '#444444' : '#E0E0E0',
     danger: colorScheme === 'dark' ? '#8B3A3A' : '#DC2626',
-    modalOptionBackground: colorScheme === 'dark' ? '#2A2A2A' : '#F0F0F0',
+    modalOptionBackground: colorScheme === 'dark' ? '#333333' : '#F0F0F0',
+    inputBackground: colorScheme === 'dark' ? '#2A2A2A' : '#FFFFFF',
+    inputText: colorScheme === 'dark' ? '#FFFFFF' : '#000000',
   };
 };
 
