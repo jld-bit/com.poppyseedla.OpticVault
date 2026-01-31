@@ -1,3 +1,4 @@
+
 import { SymbolView, SymbolViewProps, SymbolWeight } from "expo-symbols";
 import { StyleProp, ViewStyle } from "react-native";
 
@@ -28,6 +29,8 @@ export function IconSymbol({
   testID?: any;
   accessibilityLabel?: any;
 }) {
+  console.log(`IconSymbol iOS rendering: ${ios_icon_name}, size: ${size}, color: ${color}`);
+  
   return (
     <SymbolView
       onPress={onPress}

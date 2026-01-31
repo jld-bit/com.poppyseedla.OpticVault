@@ -197,6 +197,9 @@ export default function FloatingTabBar({
             {tabs.map((tab, index) => {
               const isActive = activeTabIndex === index;
               const iosIconName = iconMap[tab.icon] || tab.icon;
+              const iconColor = isActive ? theme.colors.primary : (theme.dark ? '#98989D' : '#000000');
+
+              console.log(`Rendering tab ${tab.label}: icon=${tab.icon}, iosIcon=${iosIconName}, color=${iconColor}`);
 
               return (
                 <React.Fragment key={index}>
@@ -210,7 +213,7 @@ export default function FloatingTabBar({
                       android_material_icon_name={tab.icon}
                       ios_icon_name={iosIconName}
                       size={24}
-                      color={isActive ? theme.colors.primary : (theme.dark ? '#98989D' : '#000000')}
+                      color={iconColor}
                     />
                     <Text
                       style={[

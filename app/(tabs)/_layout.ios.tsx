@@ -7,11 +7,17 @@ export default function TabLayout() {
     <NativeTabs>
       <NativeTabs.Trigger name="(home)">
         <Label>Optic Vault</Label>
-        <Icon sf={{ default: 'square.grid.2x2', selected: 'square.grid.2x2.fill' }} drawable="apps" />
+        <Icon 
+          sf={{ default: 'square.grid.2x2', selected: 'square.grid.2x2.fill' }} 
+          drawable="apps" 
+        />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="stats">
         <Label>Stats</Label>
-        <Icon sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }} drawable="assessment" />
+        <Icon 
+          sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }} 
+          drawable="assessment" 
+        />
       </NativeTabs.Trigger>
     </NativeTabs>
   );

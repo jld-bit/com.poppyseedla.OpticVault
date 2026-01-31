@@ -1,3 +1,4 @@
+
 // This file is a fallback for using MaterialIcons on Android and web.
 
 import React from "react";
@@ -42,6 +43,8 @@ export function IconSymbol({
   testID?: any;
   accessibilityLabel?: any;
 }) {
+  console.log(`IconSymbol Android/Web rendering: ${android_material_icon_name}, size: ${size}, color: ${color}`);
+  
   return (
     <MaterialIcons
       onPress={onPress}
