@@ -8,13 +8,13 @@ export default function TabLayout() {
     {
       name: '(home)',
       route: '/(tabs)/(home)/',
-      icon: 'apps',
+      icon: 'inventory',
       label: 'Optic Vault',
     },
     {
       name: 'stats',
       route: '/(tabs)/stats',
-      icon: 'assessment',
+      icon: 'bar-chart',
       label: 'Stats',
     },
   ];

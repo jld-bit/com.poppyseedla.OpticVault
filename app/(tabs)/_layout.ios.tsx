@@ -8,15 +8,15 @@ export default function TabLayout() {
       <NativeTabs.Trigger name="(home)">
         <Label>Optic Vault</Label>
         <Icon 
-          sf={{ default: 'square.grid.2x2', selected: 'square.grid.2x2.fill' }} 
-          drawable="apps" 
+          sf={{ default: 'shippingbox', selected: 'shippingbox.fill' }} 
+          drawable="inventory" 
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="stats">
         <Label>Stats</Label>
         <Icon 
-          sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }} 
-          drawable="assessment" 
+          sf={{ default: 'chart.bar.xaxis', selected: 'chart.bar.xaxis' }} 
+          drawable="bar-chart" 
         />
       </NativeTabs.Trigger>
     </NativeTabs>
