@@ -344,7 +344,7 @@ export default function AddItemScreen() {
     },
     modalOptionText: {
       fontSize: 16,
-      color: colors.text,
+      color: colors.modalOptionText,
       marginLeft: 16,
       fontWeight: '500',
     },
@@ -551,7 +551,7 @@ export default function AddItemScreen() {
                 ios_icon_name="camera"
                 android_material_icon_name="camera"
                 size={24}
-                color={colors.text}
+                color={colors.modalOptionText}
               />
               <Text style={styles.modalOptionText}>Take Photo</Text>
             </TouchableOpacity>
@@ -565,7 +565,7 @@ export default function AddItemScreen() {
                 ios_icon_name="photo"
                 android_material_icon_name="photo"
                 size={24}
-                color={colors.text}
+                color={colors.modalOptionText}
               />
               <Text style={styles.modalOptionText}>Choose from Gallery</Text>
             </TouchableOpacity>

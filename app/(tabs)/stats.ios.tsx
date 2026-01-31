@@ -142,7 +142,7 @@ export default function StatsScreen() {
     },
     statLabel: {
       fontSize: 16,
-      color: colors.textSecondary,
+      color: colors.statLabel,
       marginBottom: 8,
     },
     statValue: {
