@@ -41,6 +41,7 @@ interface FloatingTabBarProps {
 // Map Material icon names to SF Symbol names for iOS
 const iconMap: Record<string, string> = {
   'inventory': 'shippingbox',
+  'lock': 'lock',
   'bar-chart': 'chart.bar.xaxis',
   'apps': 'square.grid.2x2',
   'assessment': 'chart.bar',
