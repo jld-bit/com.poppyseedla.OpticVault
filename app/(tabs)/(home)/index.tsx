@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
+  TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/styles/commonStyles';
@@ -29,6 +30,7 @@ export default function ItemsScreen() {
   const router = useRouter();
   const colors = useThemeColors();
   const [items, setItems] = useState<Item[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   console.log('ItemsScreen rendered with items:', items.length);
 
@@ -72,6 +74,25 @@ export default function ItemsScreen() {
     return '#9C27B0';
   };
 
+  // Filter items based on search query
+  const filteredItems = items.filter((item) => {
+    const query = searchQuery.toLowerCase();
+    const brandMatch = item.brand.toLowerCase().includes(query);
+    const modelMatch = item.model.toLowerCase().includes(query);
+    const notesMatch = item.notes.toLowerCase().includes(query);
+    return brandMatch || modelMatch || notesMatch;
+  });
+
+  const handleSearchChange = (text: string) => {
+    console.log('User searching for:', text);
+    setSearchQuery(text);
+  };
+
+  const handleClearSearch = () => {
+    console.log('User cleared search');
+    setSearchQuery('');
+  };
+
   const paddingTopValue = Platform.OS === 'android' ? 48 : 0;
 
   const styles = StyleSheet.create({
@@ -80,11 +101,41 @@ export default function ItemsScreen() {
       backgroundColor: colors.background,
       paddingTop: paddingTopValue,
     },
+    searchContainer: {
+      paddingHorizontal: 20,
+      paddingTop: 12,
+      paddingBottom: 12,
+      backgroundColor: colors.background,
+    },
+    searchInputWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.border,
+      paddingHorizontal: 12,
+      height: 48,
+    },
+    searchIcon: {
+      marginRight: 8,
+    },
+    searchInput: {
+      flex: 1,
+      fontSize: 16,
+      color: colors.text,
+      paddingVertical: 0,
+    },
+    clearButton: {
+      padding: 4,
+      marginLeft: 8,
+    },
     scrollView: {
       flex: 1,
     },
     scrollContent: {
       padding: 20,
+      paddingTop: 8,
       paddingBottom: 100,
     },
     emptyState: {
@@ -176,19 +227,63 @@ export default function ItemsScreen() {
     },
   });
 
+  const showClearButton = searchQuery.length > 0;
+  const displayItems = filteredItems;
+  const hasNoResults = searchQuery.length > 0 && filteredItems.length === 0;
+  const isVaultEmpty = items.length === 0;
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <View style={styles.searchContainer}>
+        <View style={styles.searchInputWrapper}>
+          <View style={styles.searchIcon}>
+            <IconSymbol
+              ios_icon_name="magnifyingglass"
+              android_material_icon_name="search"
+              size={20}
+              color={colors.textSecondary}
+            />
+          </View>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search by brand, model or notes..."
+            placeholderTextColor={colors.textSecondary}
+            value={searchQuery}
+            onChangeText={handleSearchChange}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          {showClearButton ? (
+            <TouchableOpacity style={styles.clearButton} onPress={handleClearSearch}>
+              <IconSymbol
+                ios_icon_name="xmark.circle.fill"
+                android_material_icon_name="cancel"
+                size={20}
+                color={colors.textSecondary}
+              />
+            </TouchableOpacity>
+          ) : null}
+        </View>
+      </View>
+
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        {items.length === 0 ? (
+        {isVaultEmpty ? (
           <View style={styles.emptyState}>
             <Text style={styles.emptyStateTitle}>Your vault is empty</Text>
             <Text style={styles.emptyStateText}>
               Tap the + button below to add your first item
             </Text>
           </View>
+        ) : hasNoResults ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateTitle}>No results found</Text>
+            <Text style={styles.emptyStateText}>
+              Try searching with different keywords
+            </Text>
+          </View>
         ) : (
           <React.Fragment>
-            {items.map((item, index) => {
+            {displayItems.map((item, index) => {
               const priceDisplay = `$${item.price.toFixed(2)}`;
               const conditionColorValue = conditionColor(item.condition);
               
