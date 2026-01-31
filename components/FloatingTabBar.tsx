@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   View,
@@ -36,6 +37,29 @@ interface FloatingTabBarProps {
   borderRadius?: number;
   bottomMargin?: number;
 }
+
+// Map Material icon names to SF Symbol names for iOS
+const iconMap: Record<string, string> = {
+  'apps': 'square.grid.2x2',
+  'bar-chart': 'chart.bar',
+  'home': 'house',
+  'person': 'person',
+  'settings': 'gearshape',
+  'search': 'magnifyingglass',
+  'favorite': 'heart',
+  'notifications': 'bell',
+  'menu': 'line.horizontal.3',
+  'add': 'plus',
+  'delete': 'trash',
+  'edit': 'pencil',
+  'camera': 'camera',
+  'photo': 'photo',
+  'email': 'envelope',
+  'phone': 'phone',
+  'location-on': 'location',
+  'calendar-today': 'calendar',
+  'shopping-cart': 'cart',
+};
 
 export default function FloatingTabBar({
   tabs,
@@ -97,8 +121,6 @@ export default function FloatingTabBar({
   const handleTabPress = (route: Href) => {
     router.push(route);
   };
-
-  // Remove unnecessary tabBarStyle animation to prevent flickering
 
   const tabWidthPercent = ((100 / tabs.length) - 1).toFixed(2);
 
@@ -172,19 +194,19 @@ export default function FloatingTabBar({
           <View style={styles.tabsContainer}>
             {tabs.map((tab, index) => {
               const isActive = activeTabIndex === index;
+              const iosIconName = iconMap[tab.icon] || tab.icon;
 
               return (
                 <React.Fragment key={index}>
                 <TouchableOpacity
-                  key={index} // Use index as key
                   style={styles.tab}
                   onPress={() => handleTabPress(tab.route)}
                   activeOpacity={0.7}
                 >
-                  <View key={index} style={styles.tabContent}>
+                  <View style={styles.tabContent}>
                     <IconSymbol
                       android_material_icon_name={tab.icon}
-                      ios_icon_name={tab.icon}
+                      ios_icon_name={iosIconName}
                       size={24}
                       color={isActive ? theme.colors.primary : (theme.dark ? '#98989D' : '#000000')}
                     />
