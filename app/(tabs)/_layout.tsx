@@ -14,10 +14,12 @@ export default function TabLayout() {
     {
       name: 'stats',
       route: '/(tabs)/stats',
-      icon: 'bar-chart',
+      icon: 'insert-chart',
       label: 'Stats',
     },
   ];
+
+  console.log('Android/Web TabLayout rendering with tabs:', tabs);
 
   return (
     <React.Fragment>

@@ -3,6 +3,8 @@ import React from 'react';
 import { NativeTabs, Icon, Label } from 'expo-router/unstable-native-tabs';
 
 export default function TabLayout() {
+  console.log('iOS TabLayout rendering with NativeTabs');
+  
   return (
     <NativeTabs>
       <NativeTabs.Trigger name="(home)">
@@ -15,8 +17,8 @@ export default function TabLayout() {
       <NativeTabs.Trigger name="stats">
         <Label>Stats</Label>
         <Icon 
-          sf={{ default: 'chart.bar.xaxis', selected: 'chart.bar.xaxis' }} 
-          drawable="bar-chart" 
+          sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }} 
+          drawable="insert-chart" 
         />
       </NativeTabs.Trigger>
     </NativeTabs>

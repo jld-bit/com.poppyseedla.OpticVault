@@ -42,10 +42,10 @@ interface FloatingTabBarProps {
 const iconMap: Record<string, string> = {
   'inventory': 'shippingbox',
   'lock': 'lock',
-  'bar-chart': 'chart.bar.xaxis',
-  'apps': 'square.grid.2x2',
-  'assessment': 'chart.bar',
   'insert-chart': 'chart.bar',
+  'bar-chart': 'chart.bar',
+  'assessment': 'chart.bar',
+  'apps': 'square.grid.2x2',
   'home': 'house',
   'person': 'person',
   'settings': 'gearshape',
@@ -202,7 +202,7 @@ export default function FloatingTabBar({
               const iosIconName = iconMap[tab.icon] || tab.icon;
               const iconColor = isActive ? theme.colors.primary : (theme.dark ? '#98989D' : '#000000');
 
-              console.log(`Rendering tab ${tab.label}: icon=${tab.icon}, iosIcon=${iosIconName}, color=${iconColor}`);
+              console.log(`FloatingTabBar rendering tab ${tab.label}: icon=${tab.icon}, iosIcon=${iosIconName}, color=${iconColor}, isActive=${isActive}`);
 
               return (
                 <React.Fragment key={index}>
