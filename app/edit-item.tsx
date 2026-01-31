@@ -48,7 +48,6 @@ export default function EditItemScreen() {
 
   console.log('EditItemScreen rendered for item:', itemId);
 
-  // Load item data
   useEffect(() => {
     const loadItem = async () => {
       try {
@@ -76,37 +75,38 @@ export default function EditItemScreen() {
   const handleSave = async () => {
     console.log('User tapped Save button', { brand, model, condition, price, notes });
     
-    // Validate required fields
-    if (!brand.trim() || !model.trim()) {
+    const brandValue = brand.trim();
+    const modelValue = model.trim();
+    
+    if (!brandValue || !modelValue) {
       console.log('Validation failed: brand and model are required');
       Alert.alert('Required Fields', 'Please enter both brand and model.');
       return;
     }
 
     try {
-      // Load existing items
       const itemsJson = await AsyncStorage.getItem('vaultItems');
       const items: Item[] = itemsJson ? JSON.parse(itemsJson) : [];
       
-      // Find and update the item
       const itemIndex = items.findIndex(i => i.id === itemId);
       if (itemIndex !== -1) {
+        const priceValue = price ? parseFloat(price) : 0;
+        const notesValue = notes.trim();
+        
         items[itemIndex] = {
           ...items[itemIndex],
-          brand: brand.trim(),
-          model: model.trim(),
+          brand: brandValue,
+          model: modelValue,
           condition,
-          price: price ? parseFloat(price) : 0,
-          notes: notes.trim(),
+          price: priceValue,
+          notes: notesValue,
           photoUri: photoUri || undefined,
         };
         
-        // Save to AsyncStorage
         await AsyncStorage.setItem('vaultItems', JSON.stringify(items));
         console.log('Item updated successfully:', items[itemIndex]);
       }
       
-      // Navigate back
       router.back();
     } catch (error) {
       console.error('Error saving item:', error);
@@ -119,18 +119,14 @@ export default function EditItemScreen() {
     setShowDeleteModal(false);
     
     try {
-      // Load existing items
       const itemsJson = await AsyncStorage.getItem('vaultItems');
       const items: Item[] = itemsJson ? JSON.parse(itemsJson) : [];
       
-      // Remove the item
       const updatedItems = items.filter(i => i.id !== itemId);
       
-      // Save to AsyncStorage
       await AsyncStorage.setItem('vaultItems', JSON.stringify(updatedItems));
       console.log('Item deleted successfully');
       
-      // Navigate back
       router.back();
     } catch (error) {
       console.error('Error deleting item:', error);
@@ -150,13 +146,15 @@ export default function EditItemScreen() {
 
   const handleCameraCapture = async () => {
     console.log('User selected Camera option');
-    setShowImageSourceModal(false);
 
     try {
+      console.log('Requesting camera permissions...');
       const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+      console.log('Camera permission result:', permissionResult);
       
       if (!permissionResult.granted) {
         console.log('Camera permission denied');
+        setShowImageSourceModal(false);
         Alert.alert('Permission Required', 'Camera access is needed to take photos.');
         return;
       }
@@ -172,26 +170,31 @@ export default function EditItemScreen() {
       console.log('Camera result:', result);
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        setPhotoUri(result.assets[0].uri);
-        console.log('Photo captured:', result.assets[0].uri);
+        const selectedUri = result.assets[0].uri;
+        setPhotoUri(selectedUri);
+        console.log('Photo captured:', selectedUri);
       } else {
         console.log('Camera was canceled');
       }
     } catch (error) {
       console.error('Error capturing photo:', error);
       Alert.alert('Error', 'Failed to capture photo. Please try again.');
+    } finally {
+      setShowImageSourceModal(false);
     }
   };
 
   const handleGalleryPick = async () => {
     console.log('User selected Gallery option');
-    setShowImageSourceModal(false);
 
     try {
+      console.log('Requesting media library permissions...');
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      console.log('Media library permission result:', permissionResult);
       
       if (!permissionResult.granted) {
         console.log('Media library permission denied');
+        setShowImageSourceModal(false);
         Alert.alert('Permission Required', 'Photo library access is needed to choose photos.');
         return;
       }
@@ -207,14 +210,17 @@ export default function EditItemScreen() {
       console.log('Gallery result:', result);
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        setPhotoUri(result.assets[0].uri);
-        console.log('Photo selected from gallery:', result.assets[0].uri);
+        const selectedUri = result.assets[0].uri;
+        setPhotoUri(selectedUri);
+        console.log('Photo selected from gallery:', selectedUri);
       } else {
         console.log('Gallery selection was canceled');
       }
     } catch (error) {
       console.error('Error picking photo:', error);
       Alert.alert('Error', 'Failed to pick photo. Please try again.');
+    } finally {
+      setShowImageSourceModal(false);
     }
   };
 

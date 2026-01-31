@@ -47,37 +47,37 @@ export default function AddItemScreen() {
   const handleSave = async () => {
     console.log('User tapped Save button', { brand, model, condition, price, notes });
     
-    // Validate required fields
-    if (!brand.trim() || !model.trim()) {
+    const brandValue = brand.trim();
+    const modelValue = model.trim();
+    
+    if (!brandValue || !modelValue) {
       console.log('Validation failed: brand and model are required');
       Alert.alert('Required Fields', 'Please enter both brand and model.');
       return;
     }
 
     try {
-      // Load existing items
       const existingItemsJson = await AsyncStorage.getItem('vaultItems');
       const existingItems: Item[] = existingItemsJson ? JSON.parse(existingItemsJson) : [];
       
-      // Create new item
+      const priceValue = price ? parseFloat(price) : 0;
+      const notesValue = notes.trim();
+      
       const newItem: Item = {
         id: Date.now().toString(),
-        brand: brand.trim(),
-        model: model.trim(),
+        brand: brandValue,
+        model: modelValue,
         condition,
-        price: price ? parseFloat(price) : 0,
-        notes: notes.trim(),
+        price: priceValue,
+        notes: notesValue,
         photoUri: photoUri || undefined,
       };
 
-      // Add to items array
       const updatedItems = [...existingItems, newItem];
       
-      // Save to AsyncStorage
       await AsyncStorage.setItem('vaultItems', JSON.stringify(updatedItems));
       console.log('Item saved successfully:', newItem);
       
-      // Navigate back
       router.back();
     } catch (error) {
       console.error('Error saving item:', error);
@@ -97,13 +97,15 @@ export default function AddItemScreen() {
 
   const handleCameraCapture = async () => {
     console.log('User selected Camera option');
-    setShowImageSourceModal(false);
 
     try {
+      console.log('Requesting camera permissions...');
       const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+      console.log('Camera permission result:', permissionResult);
       
       if (!permissionResult.granted) {
         console.log('Camera permission denied');
+        setShowImageSourceModal(false);
         Alert.alert('Permission Required', 'Camera access is needed to take photos.');
         return;
       }
@@ -119,26 +121,31 @@ export default function AddItemScreen() {
       console.log('Camera result:', result);
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        setPhotoUri(result.assets[0].uri);
-        console.log('Photo captured:', result.assets[0].uri);
+        const selectedUri = result.assets[0].uri;
+        setPhotoUri(selectedUri);
+        console.log('Photo captured:', selectedUri);
       } else {
         console.log('Camera was canceled');
       }
     } catch (error) {
       console.error('Error capturing photo:', error);
       Alert.alert('Error', 'Failed to capture photo. Please try again.');
+    } finally {
+      setShowImageSourceModal(false);
     }
   };
 
   const handleGalleryPick = async () => {
     console.log('User selected Gallery option');
-    setShowImageSourceModal(false);
 
     try {
+      console.log('Requesting media library permissions...');
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      console.log('Media library permission result:', permissionResult);
       
       if (!permissionResult.granted) {
         console.log('Media library permission denied');
+        setShowImageSourceModal(false);
         Alert.alert('Permission Required', 'Photo library access is needed to choose photos.');
         return;
       }
@@ -154,14 +161,17 @@ export default function AddItemScreen() {
       console.log('Gallery result:', result);
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        setPhotoUri(result.assets[0].uri);
-        console.log('Photo selected from gallery:', result.assets[0].uri);
+        const selectedUri = result.assets[0].uri;
+        setPhotoUri(selectedUri);
+        console.log('Photo selected from gallery:', selectedUri);
       } else {
         console.log('Gallery selection was canceled');
       }
     } catch (error) {
       console.error('Error picking photo:', error);
       Alert.alert('Error', 'Failed to pick photo. Please try again.');
+    } finally {
+      setShowImageSourceModal(false);
     }
   };
 
