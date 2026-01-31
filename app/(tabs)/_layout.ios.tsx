@@ -11,7 +11,7 @@ export default function TabLayout() {
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="stats">
         <Label>Stats</Label>
-        <Icon sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }} drawable="bar-chart" />
+        <Icon sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }} drawable="assessment" />
       </NativeTabs.Trigger>
     </NativeTabs>
   );

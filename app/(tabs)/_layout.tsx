@@ -14,7 +14,7 @@ export default function TabLayout() {
     {
       name: 'stats',
       route: '/(tabs)/stats',
-      icon: 'bar-chart',
+      icon: 'assessment',
       label: 'Stats',
     },
   ];

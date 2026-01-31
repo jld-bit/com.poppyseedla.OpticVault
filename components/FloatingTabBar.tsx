@@ -41,7 +41,8 @@ interface FloatingTabBarProps {
 // Map Material icon names to SF Symbol names for iOS
 const iconMap: Record<string, string> = {
   'apps': 'square.grid.2x2',
-  'bar-chart': 'chart.bar',
+  'assessment': 'chart.bar',
+  'insert-chart': 'chart.bar',
   'home': 'house',
   'person': 'person',
   'settings': 'gearshape',
@@ -119,6 +120,7 @@ export default function FloatingTabBar({
   }, [activeTabIndex, animatedValue]);
 
   const handleTabPress = (route: Href) => {
+    console.log('Tab pressed, navigating to:', route);
     router.push(route);
   };
 
