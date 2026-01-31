@@ -78,17 +78,7 @@ export default function ItemsScreen() {
     container: {
       flex: 1,
       backgroundColor: colors.background,
-    },
-    header: {
-      paddingHorizontal: 20,
-      paddingBottom: 16,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
-    },
-    headerTitle: {
-      fontSize: 32,
-      fontWeight: 'bold',
-      color: colors.text,
+      paddingTop: paddingTopValue,
     },
     scrollView: {
       flex: 1,
@@ -188,10 +178,6 @@ export default function ItemsScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={[styles.header, { paddingTop: paddingTopValue }]}>
-        <Text style={styles.headerTitle}>Optic Vault</Text>
-      </View>
-
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {items.length === 0 ? (
           <View style={styles.emptyState}>

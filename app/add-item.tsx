@@ -4,12 +4,12 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TextInput,
   TouchableOpacity,
   Platform,
   Image,
   Modal,
+  Alert,
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,6 +17,7 @@ import { useThemeColors } from '@/styles/commonStyles';
 import * as ImagePicker from 'expo-image-picker';
 import { IconSymbol } from '@/components/IconSymbol';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { KeyboardAwareScrollView } from '@pietile-native-kit/keyboard-aware-scrollview';
 
 type Condition = 'New' | 'Used' | 'Vintage';
 
@@ -49,6 +50,7 @@ export default function AddItemScreen() {
     // Validate required fields
     if (!brand.trim() || !model.trim()) {
       console.log('Validation failed: brand and model are required');
+      Alert.alert('Required Fields', 'Please enter both brand and model.');
       return;
     }
 
@@ -79,6 +81,7 @@ export default function AddItemScreen() {
       router.back();
     } catch (error) {
       console.error('Error saving item:', error);
+      Alert.alert('Error', 'Failed to save item. Please try again.');
     }
   };
 
@@ -96,23 +99,34 @@ export default function AddItemScreen() {
     console.log('User selected Camera option');
     setShowImageSourceModal(false);
 
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    
-    if (!permissionResult.granted) {
-      console.log('Camera permission denied');
-      return;
-    }
+    try {
+      const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+      
+      if (!permissionResult.granted) {
+        console.log('Camera permission denied');
+        Alert.alert('Permission Required', 'Camera access is needed to take photos.');
+        return;
+      }
 
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+      console.log('Launching camera...');
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      setPhotoUri(result.assets[0].uri);
-      console.log('Photo captured:', result.assets[0].uri);
+      console.log('Camera result:', result);
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setPhotoUri(result.assets[0].uri);
+        console.log('Photo captured:', result.assets[0].uri);
+      } else {
+        console.log('Camera was canceled');
+      }
+    } catch (error) {
+      console.error('Error capturing photo:', error);
+      Alert.alert('Error', 'Failed to capture photo. Please try again.');
     }
   };
 
@@ -120,16 +134,34 @@ export default function AddItemScreen() {
     console.log('User selected Gallery option');
     setShowImageSourceModal(false);
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (!permissionResult.granted) {
+        console.log('Media library permission denied');
+        Alert.alert('Permission Required', 'Photo library access is needed to choose photos.');
+        return;
+      }
 
-    if (!result.canceled) {
-      setPhotoUri(result.assets[0].uri);
-      console.log('Photo selected from gallery:', result.assets[0].uri);
+      console.log('Launching image library...');
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      console.log('Gallery result:', result);
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setPhotoUri(result.assets[0].uri);
+        console.log('Photo selected from gallery:', result.assets[0].uri);
+      } else {
+        console.log('Gallery selection was canceled');
+      }
+    } catch (error) {
+      console.error('Error picking photo:', error);
+      Alert.alert('Error', 'Failed to pick photo. Please try again.');
     }
   };
 
@@ -150,6 +182,7 @@ export default function AddItemScreen() {
     },
     scrollContent: {
       padding: 20,
+      paddingBottom: 40,
     },
     headerButton: {
       fontSize: 16,
@@ -341,7 +374,13 @@ export default function AddItemScreen() {
       />
       
       <SafeAreaView style={styles.container} edges={['bottom']}>
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <KeyboardAwareScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          extraScrollHeight={20}
+          enableOnAndroid={true}
+          enableAutomaticScroll={true}
+        >
           <View style={styles.photoSection}>
             {photoUri ? (
               <View style={styles.photoContainer}>
@@ -471,7 +510,7 @@ export default function AddItemScreen() {
               <Text style={styles.removePhotoText}>Remove Photo</Text>
             </TouchableOpacity>
           ) : null}
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
 
       <Modal
@@ -480,8 +519,16 @@ export default function AddItemScreen() {
         animationType="fade"
         onRequestClose={() => setShowImageSourceModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+        <TouchableOpacity 
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowImageSourceModal(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalContent}
+            activeOpacity={1}
+            onPress={(e) => e.stopPropagation()}
+          >
             <Text style={styles.modalTitle}>Add Photo</Text>
             <Text style={styles.modalSubtitle}>Choose a photo source</Text>
             
@@ -520,8 +567,8 @@ export default function AddItemScreen() {
             >
               <Text style={styles.modalCancelText}>Cancel</Text>
             </TouchableOpacity>
-          </View>
-        </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
     </React.Fragment>
   );
